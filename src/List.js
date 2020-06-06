@@ -3,11 +3,16 @@ import axios from 'axios';
 
 function List() {
   const [chunk, setChunk] = useState([])
-  const renderSlice = useCallback((data, _slice = 500) => {
-    setTimeout(() => {
-      renderSlice(data);
-    }, 1000)
-    return data.length > 0 ? setChunk(_chunk => _chunk.concat(data.splice(0, _slice))) : [];
+  const renderSlice = useCallback((data, _timeout, _slice = 10000) => {
+    if(data.length > 0) {
+      clearTimeout(_timeout)
+      const timeout = setTimeout(() => {
+        renderSlice(data, timeout);
+      }, 1000)
+      setChunk(_chunk => _chunk.concat(data.splice(0, _slice)))
+    } else {
+      console.log('else')
+    }
   }, [])
   useEffect(() => {
     const fetch = async () => {
